@@ -911,7 +911,7 @@ L.control.search = function (options) {
 
 //test remplacement caractères acentués
 
-String.prototype.sansAccent = function(){
+/*String.prototype.sansAccent = function(){
     var accent = [
         /[\300-\306]/g, /[\340-\346]/g, // A, a
         /[\310-\313]/g, /[\350-\353]/g, // E, e
@@ -929,4 +929,4 @@ String.prototype.sansAccent = function(){
     }
      
     return str;
-}
+}*/
