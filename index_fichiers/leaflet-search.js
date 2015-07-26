@@ -324,9 +324,10 @@ L.Control.Search = L.Control.extend({
 		}
 		else
 		{
-			tip = L.DomUtil.create('a', '');
-			tip.href = '#';
-			tip.innerHTML = text;
+			tip = L.DomUtil.create('li', '');
+            tip.innerHTML = text;
+            tip.title = "";
+            /*tip.title = text;*/
 		}
 		
 		L.DomUtil.addClass(tip, 'search-tip');
@@ -360,7 +361,7 @@ L.Control.Search = L.Control.extend({
 			frecords = {};
 
 		text = text.replace(regFilter,'');	  //sanitize text
-		//text = text.sansAccent();
+		text = text.sansAccent(); //enlève accent dans le texte reché
 		I = this.options.initial ? '^' : '';  //search only initial text
 		//TODO add option for case sesitive search, also showLocation
 		regSearch = new RegExp(I + text,'i');
@@ -368,7 +369,7 @@ L.Control.Search = L.Control.extend({
 		for(var key in this._recordsCache)
 			if( regSearch.test(key) )
 				frecords[key]= this._recordsCache[key];
-		
+
 		return frecords;
 	},
 
@@ -415,10 +416,11 @@ L.Control.Search = L.Control.extend({
 		return 0;
 	},
 
-	_defaultFilterJSON: function(json) {	//default callback for filter data
+	/*_defaultFilterJSON: function(json) {	//default callback for filter data
 		var jsonret = {}, i,
 			propName = this.options.propertyName,
-			propLoc = this.options.propertyLoc;
+			propLoc = this.options.propertyLoc,
+            propAlt = this.options.propertyAlt;
 
 		if( L.Util.isArray(propLoc) )
 			for(i in json)
@@ -428,9 +430,9 @@ L.Control.Search = L.Control.extend({
 				jsonret[ this._getPath(json[i],propName) ]= L.latLng( this._getPath(json[i],propLoc) );
 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
-	},
+	},*/
 
-	_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
+	/*_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
 		//TODO remove script node after call run
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
@@ -444,9 +446,9 @@ L.Control.Search = L.Control.extend({
 		script.type = 'text/javascript';
 		script.src = url;
 		return {abort: function() { script.parentNode.removeChild(script); } };
-	},
+	},*/
 
-	_recordsFromAjax: function(text, callAfter) {	//Ajax request
+	/*_recordsFromAjax: function(text, callAfter) {	//Ajax request
 		if (window.XMLHttpRequest === undefined) {
 			window.XMLHttpRequest = function() {
 				try { return new ActiveXObject("Microsoft.XMLHTTP.6.0"); }
@@ -473,14 +475,14 @@ L.Control.Search = L.Control.extend({
 		};
 		request.send();
 		return request;   
-	},	
+	},*/	
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var that = this,
 			retRecords = {},
 			propName = this.options.propertyName,
 			loc;
-		
+
 		this._layer.eachLayer(function(layer) {
 
 			if(layer instanceof SearchMarker) return;
@@ -909,7 +911,7 @@ L.control.search = function (options) {
 
 }).call(this);
 
-//test remplacement caractères acentués
+//remplacement caractères acentués dans la recherche
 
 String.prototype.sansAccent = function(){
     var accent = [
@@ -927,6 +929,5 @@ String.prototype.sansAccent = function(){
     for(var i = 0; i < accent.length; i++){
         str = str.replace(accent[i], noaccent[i]);
     }
-     
     return str;
 }
